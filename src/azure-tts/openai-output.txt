@@ -1,0 +1,12 @@
+<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="zh-TW">
+  <voice name="zh-TW-YunJheNeural">
+你好，幾位?
+1位用餐。
+請問有訂位嗎?
+有，我是訂下午3點。
+請問貴姓?
+我姓陳。
+好的，這邊請。
+這是菜單。
+  </voice>
+</speak>

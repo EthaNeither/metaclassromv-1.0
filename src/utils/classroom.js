@@ -3,8 +3,9 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import * as CANNON from '../../node_modules/cannon-es/dist/cannon-es.js'
 import { PointerLockControlsCannon } from './libs/PointerLockControlsCannon.js'
 import { Vec3 } from 'cannon-es';
-
-
+import * as sdk from "microsoft-cognitiveservices-speech-sdk";
+import fs from "fs";
+import path from "path";
 export default class Three {
     constructor() {
         try {
@@ -132,6 +133,11 @@ export default class Three {
             const teachertable = new THREE.Mesh(teachertableGeo, tableMat)
             teachertable.position.set(-2.2, 0, 3)
             sce.add(teachertable)
+            //語音播放cube
+            const playvideolarge = new THREE.BoxGeometry(.0001, 1, 1)
+            const playvideo = new THREE.Mesh(playvideolarge, tableMat)
+            playvideo.position.set(-4, 1.7, -0)
+            sce.add(playvideo)
         }
         function watchwall(sce) {
             const wallMat = new THREE.MeshBasicMaterial({
@@ -155,13 +161,64 @@ export default class Three {
             leftwall.position.set(1, 1.5, 3.7)
             sce.add(leftwall)
         }
-        // watchtable(this.scene);
-        // watchwall(this.scene);
+        watchtable(this.scene);
+        watchwall(this.scene);
 
         // var pointer ,raycaster
-        this.pointer  = new THREE.Vector2()
+        this.pointer = new THREE.Vector2()
         this.raycaster = new THREE.Raycaster()
-        window.addEventListener( 'pointermove', this.onPointerMove(Event) );
+        //語音播放cube
+        window.addEventListener('mousemove', this.onPointerMove(this));
+        window.addEventListener('click', this.clickc.bind(this));
+    }
+    clickc() {
+
+
+        const directory = "path/to/directory"; // 修改為你想要存儲音訊檔案的目錄路徑
+        const inputFile = "C:\\Users\\acer\\Desktop\\最新ilearn\\metaclassromv-1.0\\src\\azure-tts\\openai-output.txt";
+
+        if (!fs.existsSync(directory)) {
+            fs.mkdirSync(directory, { recursive: true });
+        }
+
+        const audioFile = path.join(directory, "azure-tts.mp3");
+        const speechKey = "dab8c7a631724857a9ab789296e6872d";
+        const speechRegion = "eastus";
+
+        const speechConfig = sdk.SpeechConfig.fromSubscription(speechKey, speechRegion);
+        const audioConfig = sdk.AudioConfig.fromAudioFileOutput(audioFile);
+
+        speechConfig.speechSynthesisVoiceName = "zh-TW-YunJheNeural";
+
+        const synthesizer = new sdk.SpeechSynthesizer(speechConfig, audioConfig);
+
+        fs.readFile(inputFile, "utf8", function (err, text) {
+            if (err) {
+                console.error("Error reading the input file: " + err);
+                return;
+            }
+
+            synthesizer.speakSsmlAsync(
+                text,
+                function (result) {
+                    if (result.reason === sdk.ResultReason.SynthesizingAudioCompleted) {
+                        console.log("Synthesis finished.");
+                    } else {
+                        console.error(
+                            "Speech synthesis canceled, " +
+                            result.errorDetails +
+                            "\nDid you set the speech resource key and region values?"
+                        );
+                    }
+                    synthesizer.close();
+                },
+                function (err) {
+                    console.trace("Error - " + err);
+                    synthesizer.close();
+                }
+            );
+            console.log("Now synthesizing to: " + audioFile);
+        });
 
     }
     setLight() {
@@ -213,7 +270,7 @@ export default class Three {
         let url = './model/'
         this.modelLoader(url, { x: 1, y: 1, z: 1 }, { x: 0, y: 0, z: 0 }, { x: 0, y: 0, z: 0 }, "place", "classroom");
         this.modelLoader(url, { x: 3, y: 3, z: 3 }, { x: -3.5, y: 1.2, z: 3.5 }, { x: 0, y: 3, z: 0 }, "people", "teacher(walking)");
-        this.modelLoader(url, { x: .1, y:.1, z:.1}, { x: 0, y: 1.2, z: 0 }, { x: 0, y: 0, z: 0 }, "object", "NTD100");
+        this.modelLoader(url, { x: .1, y: .1, z: .1 }, { x: 0, y: 1.2, z: 0 }, { x: 0, y: 0, z: 0 }, "object", "NTD100");
     }
 
     modelLoader(path, size, position, rotation, type, name) {
@@ -237,7 +294,7 @@ export default class Three {
         // }
         this.loading = true;
         this.loader = new GLTFLoader(loadingManger).setPath(path);
-        this.loader.load(type+'/'+name+'.glb', (gltf) => {
+        this.loader.load(type + '/' + name + '.glb', (gltf) => {
             gltf.scene.scale.set(size.x, size.y, size.z);//設定大小
             gltf.scene.position.set(position.x, position.y, position.z);//設定位置
             if (rotation) {
@@ -553,8 +610,8 @@ export default class Three {
     addobj() {
         let three = this
         function addNTD100() {
-            const obj = three.scene.children.find((a) =>a.name === 'NTD100')
-            if(obj){
+            const obj = three.scene.children.find((a) => a.name === 'NTD100')
+            if (obj) {
                 const halfExtents = new Vec3(obj.scale.x / 2, obj.scale.y / 2, obj.scale.z / 2)
                 const xy = new Vec3(obj.position.x, obj.position.y, obj.position.z)
                 const Shape = new CANNON.Box(halfExtents)

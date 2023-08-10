@@ -16,6 +16,7 @@
 <script>
 import { reactive, onMounted } from '@vue/runtime-core'
 import test from '../utils/classroom.js'
+//import {playy} from 'C://Users//acer//Desktop//最新ilearn//metaclassromv-1.0//public//audio.js'
 export default {
     setup() {
         let obj

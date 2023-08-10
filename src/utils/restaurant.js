@@ -83,6 +83,10 @@ export default class Three {
             const table4 = new THREE.Mesh(tableGeo4, tableMat)
             table4.position.set(-6, 2, 5.5)
             sce.add(table4)
+            const tableGeo5 = new THREE.BoxGeometry(3, 5, 1)
+            const table5 = new THREE.Mesh(tableGeo4, tableMat)
+            table5.position.set(0, 3, 2)
+            sce.add(table5)
         }
         function watchcounter(sce) {
             const counterMat = new THREE.MeshBasicMaterial({
@@ -120,9 +124,9 @@ export default class Three {
             leftwall.position.set(-7, 2.5, 0)
             sce.add(leftwall)
         }
-        // watchtable(this.scene);
+        watchtable(this.scene);
         // watchcounter(this.scene);
-        // watchwall(this.scene);
+        watchwall(this.scene);
     }
 
     setLight() {

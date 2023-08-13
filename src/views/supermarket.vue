@@ -7,8 +7,9 @@
                     <progress id="progress-bar" value="0" max="100"></progress>
                 </div>
                 <p>
-                    click me to start
+                    click to start
                 </p>
+                <button @click="goToLobby" id="lobbyButton">前往主畫面</button>
             </div>
         </div>
     </div>
@@ -16,21 +17,30 @@
 <script>
 import { reactive, onMounted } from '@vue/runtime-core'
 import test from '../utils/supermarket.js'
+import { useRouter } from 'vue-router';
+
 export default {
-    setup() {
-        let obj
-        let src = reactive({
-            url: undefined
-        })
-        onMounted(() => {
-            obj = reactive(new test())
-        })
-        return {
-            obj, src,
-        }
-    }
-}
+  setup() {
+    const router = useRouter();
+    let obj;
+    const goToLobby = () => {
+      // 使用路由導航到Lobby頁面
+      router.push({ name: 'lobby' });
+    };
+    onMounted(() => {
+      obj = reactive(new test());
+    });
+
+    const state = reactive({});
+
+    return {
+      obj,
+      goToLobby,
+    };
+  },
+};
 </script>
+
 <style>
 .loading-bar {
     position: absolute;

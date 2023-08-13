@@ -1,9 +1,11 @@
+//初始化和管理超市場景的設置、3D模型的加載、物理引擎的初始化
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import * as CANNON from '../../node_modules/cannon-es/dist/cannon-es.js'
 import { PointerLockControlsCannon } from './libs/PointerLockControlsCannon.js'
 import { Vec3 } from 'cannon-es';
-
+import SupermarketdialogData from '/src/views/Level2/SupermarketdialogData.js';
+//import googlefont from 'src/assets/font/NotoSansTC-Regular.otf';
 
 export default class Three {
     constructor() {
@@ -127,25 +129,110 @@ export default class Three {
             const counter3 = new THREE.Mesh(counterGeo3, counterMat)
             counter3.position.set(3.25, 1.9, 7.625)
             sce.add(counter3)
+
         }
         function watchobj(sce) {
-            const objMat = new THREE.MeshBasicMaterial({
-                color: 0x3498db,
-                wireframe: true
-            })
-            const cartGeo = new THREE.BoxGeometry(1.5, 1, 2)
-            const cart = new THREE.Mesh(cartGeo, objMat)
-            cart.position.set(-2.6, 1.9, 8.7)
-            sce.add(cart)
-            const boxsGeo = new THREE.BoxGeometry(2, 1, 1.5)
-            const boxs = new THREE.Mesh(boxsGeo, objMat)
-            boxs.position.set(4.75, 2, -6.5)
-            sce.add(boxs)
+            const blackMat = new THREE.MeshBasicMaterial({ color: 0x000000 });
+        
+            const cartGeo = new THREE.BoxGeometry(1.5, 1, 2);
+            const cart = new THREE.Mesh(cartGeo, blackMat);
+            cart.position.set(-2.6, 1.9, 8.7);
+            sce.add(cart);
+        
+            const boxsGeo = new THREE.BoxGeometry(2, 1, 1.5);
+            const boxs = new THREE.Mesh(boxsGeo, blackMat);
+            boxs.position.set(4.75, 2, -6.5);
+            sce.add(boxs);
         }
-        // watchshelf(this.scene);
-        // watchwall(this.scene);
-        // watchcounter(this.scene);
-        // watchobj(this.scene);
+        function select(sce) {
+            const questionBanks = [SupermarketdialogData.questionBank1, SupermarketdialogData.questionBank2];// 將兩個題庫合併
+            //指向第一個題庫和第一個題目
+            let currentQuestionBankIndex = 0;
+            let currentQuestionIndex = 0;
+        
+            const objMat = new THREE.MeshBasicMaterial({//創建一個基本的綠色線框材質
+                color: 0x00ff00,
+                wireframe: true
+            });
+        
+            const se1 = new THREE.BoxGeometry(2, 0.5, 0.5);// 選項框1
+            const s1 = new THREE.Mesh(se1, objMat);
+            s1.position.set(0, 1.5, 4);
+            sce.add(s1);
+        
+            const se2 = new THREE.BoxGeometry(2, 0.5, 0.5);// 選項框2
+            const s2 = new THREE.Mesh(se2, objMat);
+            s2.position.set(-2.4, 1.5, 4);
+            sce.add(s2);
+        
+            const t = new THREE.BoxGeometry(3, 0.5, 0.5);// 問題&回覆
+            const title = new THREE.Mesh(t, objMat);
+            title.position.set(-1.2, 2.3, 4);
+            sce.add(title);
+        
+            const fontLoader = new THREE.FontLoader();
+        
+            function displayCurrentQuestion() {
+                const selectedQuestionBank = questionBanks[currentQuestionBankIndex];
+                const selectedQuestion = selectedQuestionBank[currentQuestionIndex];
+                const questionText = selectedQuestion.question;
+                const options = selectedQuestion.options;
+        
+                fontLoader.load('/src/assets/font/NotoSansTC-Regular.otf', (font) => { // 載入字體
+                    const questionGeometry = new THREE.TextGeometry(questionText, {//問題&回覆
+                        font: font,
+                        size: 0.2,
+                        height: 0.01,
+                        curveSegments: 12
+                    });
+                    const questionMesh = new THREE.Mesh(questionGeometry, objMat);
+                    questionMesh.position.set(-1, 2.3, 4.2);
+                     // 移除之前的選項文字幾何體，並加入新的
+                    sce.remove(title);
+                    sce.add(questionMesh);
+        
+                    // 更新選項文字
+                    options.forEach((option, index) => {
+                        const optionMesh = new THREE.Mesh(index === 0 ? se1 : se2, objMat);
+                        optionMesh.position.set(-1.2 + index * 2.4, 1.5, 4);
+        
+                        const optionTextGeometry = new THREE.TextGeometry(option.text, {
+                            font: font, 
+                            size: 0.2,
+                            height: 0.01,
+                            curveSegments: 12
+                        });
+        
+                        const optionTextMesh = new THREE.Mesh(optionTextGeometry, objMat);
+                        optionTextMesh.position.set(-1.4 + index * 2.4, 1.5, 4.2);
+        
+                        sce.remove(index === 0 ? s1 : s2);
+                        sce.add(optionMesh);
+                        sce.add(optionTextMesh);
+                    });
+        
+                    // 更新索引
+                    currentQuestionIndex++;
+                    if (currentQuestionIndex >= selectedQuestionBank.length) {
+                        // 如果題庫1的題目已顯示完畢，切換到題庫2
+                        currentQuestionBankIndex++;
+                        currentQuestionIndex = 0;
+                    }
+        
+                    if (currentQuestionBankIndex < questionBanks.length) {
+                        // 如果還有未顯示完的題庫，繼續顯示下一個題目
+                        requestAnimationFrame(displayCurrentQuestion);
+                    }
+                });
+            }
+             // 啟動顯示第一個題目
+            displayCurrentQuestion();
+        }
+        watchshelf(this.scene);
+        watchwall(this.scene);
+        watchcounter(this.scene);
+        watchobj(this.scene);
+        select(this.scene)
     }
 
     setLight() {
@@ -200,7 +287,7 @@ export default class Three {
 
         this.loading = true;
         this.loader = new GLTFLoader(loadingManger).setPath(path);
-        this.loader.load(type+'/'+name+'.glb', (gltf) => {
+        this.loader.load(type + '/' + name + '.glb', (gltf) => {
             gltf.scene.scale.set(size.x, size.y, size.z);//設定大小
             gltf.scene.position.set(position.x, position.y, position.z);//設定位置
             if (rotation) {

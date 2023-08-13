@@ -155,8 +155,8 @@ export default class Three {
             leftwall.position.set(1, 1.5, 3.7)
             sce.add(leftwall)
         }
-        // watchtable(this.scene);
-        // watchwall(this.scene);
+         watchtable(this.scene);
+         watchwall(this.scene);
 
         // var pointer ,raycaster
         this.pointer  = new THREE.Vector2()

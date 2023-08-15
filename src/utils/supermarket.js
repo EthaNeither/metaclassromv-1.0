@@ -4,8 +4,9 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import * as CANNON from '../../node_modules/cannon-es/dist/cannon-es.js'
 import { PointerLockControlsCannon } from './libs/PointerLockControlsCannon.js'
 import { Vec3 } from 'cannon-es';
-import SupermarketdialogData from '/src/views/Level2/SupermarketdialogData.js';
-//import googlefont from 'src/assets/font/NotoSansTC-Regular.otf';
+import SupermarketdialogData from '/src/views/Level2/SupermarketdialogData.js';//對話內容
+import { FontLoader } from 'three/addons/loaders/FontLoader.js';
+import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
 
 export default class Three {
     constructor() {
@@ -150,27 +151,28 @@ export default class Three {
             let currentQuestionBankIndex = 0;
             let currentQuestionIndex = 0;
         
-            const objMat = new THREE.MeshBasicMaterial({//創建一個基本的綠色線框材質
-                color: 0x00ff00,
-                wireframe: true
+            const objMat = new THREE.MeshBasicMaterial({//創建一個基本的線框材質
+                color: 0xEAE6E5,
+                wireframe: false
             });
+            const fontColor = 0x000000; // 設定字體顏色為黑色
         
-            const se1 = new THREE.BoxGeometry(2, 0.5, 0.5);// 選項框1
+            const se1 = new THREE.BoxGeometry(1.5, 0.5, 0.5); // 選項框1
             const s1 = new THREE.Mesh(se1, objMat);
             s1.position.set(0, 1.5, 4);
             sce.add(s1);
-        
-            const se2 = new THREE.BoxGeometry(2, 0.5, 0.5);// 選項框2
+
+            const se2 = new THREE.BoxGeometry(1.5, 0.5, 0.5); // 選項框2
             const s2 = new THREE.Mesh(se2, objMat);
             s2.position.set(-2.4, 1.5, 4);
             sce.add(s2);
         
-            const t = new THREE.BoxGeometry(3, 0.5, 0.5);// 問題&回覆
+            const t = new THREE.BoxGeometry(2, 0.5, 0.5);// 問題&回覆
             const title = new THREE.Mesh(t, objMat);
             title.position.set(-1.2, 2.3, 4);
             sce.add(title);
         
-            const fontLoader = new THREE.FontLoader();
+            const fontLoader = new FontLoader();
         
             function displayCurrentQuestion() {
                 const selectedQuestionBank = questionBanks[currentQuestionBankIndex];
@@ -179,11 +181,13 @@ export default class Three {
                 const options = selectedQuestion.options;
         
                 fontLoader.load('/src/assets/font/NotoSansTC-Regular.otf', (font) => { // 載入字體
-                    const questionGeometry = new THREE.TextGeometry(questionText, {//問題&回覆
+                    const questionGeometry = new TextGeometry(questionText, {//問題&回覆
                         font: font,
                         size: 0.2,
                         height: 0.01,
                         curveSegments: 12
+                    }, undefined, (error) => {
+                        console.error('字體載入錯誤：', error);
                     });
                     const questionMesh = new THREE.Mesh(questionGeometry, objMat);
                     questionMesh.position.set(-1, 2.3, 4.2);
@@ -192,23 +196,24 @@ export default class Three {
                     sce.add(questionMesh);
         
                     // 更新選項文字
-                    options.forEach((option, index) => {
-                        const optionMesh = new THREE.Mesh(index === 0 ? se1 : se2, objMat);
-                        optionMesh.position.set(-1.2 + index * 2.4, 1.5, 4);
-        
-                        const optionTextGeometry = new THREE.TextGeometry(option.text, {
-                            font: font, 
-                            size: 0.2,
-                            height: 0.01,
-                            curveSegments: 12
-                        });
-        
-                        const optionTextMesh = new THREE.Mesh(optionTextGeometry, objMat);
-                        optionTextMesh.position.set(-1.4 + index * 2.4, 1.5, 4.2);
-        
-                        sce.remove(index === 0 ? s1 : s2);
-                        sce.add(optionMesh);
-                        sce.add(optionTextMesh);
+                    // 更新選項文字
+                    options.forEach((option) => {
+                    const optionMesh = new THREE.Mesh(option.id === 1 ? se1 : se2, objMat);
+                    optionMesh.position.set(-1.2 + (option.id - 1) * 2.4, 1.5, 4);
+
+                    const optionTextMat = new THREE.MeshBasicMaterial({ color: fontColor }); // 使用設定的字體顏色
+                    const optionTextGeometry = new TextGeometry(option.text, {
+                        font: font,
+                        size: 0.2,
+                        height: 0.01,
+                        curveSegments: 12
+                    });
+                    const optionTextMesh = new THREE.Mesh(optionTextGeometry, optionTextMat);
+                    optionTextMesh.position.set(-1.4 + (option.id - 1) * 2.4, 1.5, 4.2);
+
+                    sce.remove(option.id === 1 ? s1 : s2);
+                    sce.add(optionMesh);
+                    sce.add(optionTextMesh);
                     });
         
                     // 更新索引

@@ -1,113 +1,133 @@
 <template>
-    <div>
-        <h1>登入</h1>
-        <form @submit.prevent="handleSubmit">
-            <label>帳號:</label>
-            <input type="text" required v-model="帳號">
-            <label>密碼:</label>
-            <input type="password" required v-model="密碼">
-            <div v-if="passwordError" class="error">{{ passwordError }}</div>
-
-            <div class="terms">
-                <input type="checkbox" v-model="terms" required>
-                <label>同意所有條款</label>
-            </div>
-
-            <div class="submit">
-                <router-link :to="{ name: 'lobby' }"><button type="submit">確認</button></router-link>
-            </div>
-        </form>
-
-        <p>帳號: {{ 帳號 }}</p>
-        <p>密碼: {{ 密碼 }}</p>
-        <p>Terms accept: {{ terms }}</p>
-
-
+  <div class="login-page">
+    <div class="login-container">
+      <h1 class="login-title">歡迎登入</h1>
+      <form @submit.prevent="handleSubmit" class="login-form">
+        <label class="login-label">帳號:</label>
+        <input type="text" required v-model="帳號" class="login-input">
+        <label class="login-label">密碼:</label>
+        <input type="password" required v-model="密碼" class="login-input">
+        <div v-if="passwordError" class="error">{{ passwordError }}</div>
+      
+        <div class="terms">
+          <input type="checkbox" v-model="terms" required>
+          <label>同意所有條款</label>
+        </div>
+      
+        <div class="submit">
+          <router-link :to="{ name: 'lobby' }"><button type="submit" class="login-button">確認</button></router-link>
+        </div>
+      </form>
+      
+      <p class="login-info">帳號: {{ 帳號 }}</p>
+      <p class="login-info">密碼: {{ 密碼 }}</p>
+      <p class="login-info">Terms accept: {{ terms }}</p>
     </div>
+  </div>
 </template>
 
 <script>
 export default {
-    data() {
-        return {
-            帳號: '',
-            密碼: '',
-            terms: false,
-            passwordError: '',
-        };
-    },
-
+  data() {
+    return {
+      帳號: '',
+      密碼: '',
+      terms: false,
+      passwordError: '',
+    };
+  },
+  methods: {
     handleSubmit() {
-        this.passwordError = this.密碼.length > 5 ? '' : '密碼至少需要6個字元';
+      this.passwordError = this.密碼.length > 5 ? '' : '密碼至少需要6個字元';
 
-        if (!this.passwordError) {
-            console.log('帳號:', this.帳號);
-            console.log('密碼:', this.密碼);
-            console.log('terms accepted:', this.terms);
-        }
+      if (!this.passwordError) {
+        console.log('帳號:', this.帳號);
+        console.log('密碼:', this.密碼);
+        console.log('terms accepted:', this.terms);
+      }
     },
+  },
 };
 </script>
 
 <style scoped>
-h1 {
-    color: black;
+.login-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-image: url('src/views/Level2/picture/signup1.png');
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 
-form {
-    max-width: 420px;
-    margin: 30px auto;
-    background: white;
-    text-align: left;
-    padding: 40px;
-    border-radius: 10px;
+.login-container {
+  max-width: 420px;
+  background: white;
+  text-align: center;
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  margin-left: 30%;
 }
 
-label {
-    color: #aaa;
-    display: inline-block;
-    margin: 25px 0 15px;
-    font-size: 1.2em;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    font-weight: bold;
+.login-title {
+  color: #000;
+  font-size: 24px;
+  margin-bottom: 20px;
 }
 
-input,
-select {
-    display: block;
-    padding: 10px 6px;
-    width: 100%;
-    box-sizing: border-box;
-    border: none;
-    border-bottom: 1px solid #ddd;
-    color: #555;
+.login-label {
+  color: #000;
+  font-size: 1.2em;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 5px;
+  text-align: left;
 }
 
-input[type="checkbox"] {
-    display: inline-block;
-    width: 16px;
-    margin: 0 10px 0 0;
-    position: relative;
-    top: 2px;
+.login-input {
+  display: block;
+  padding: 10px;
+  width: 100%;
+  box-sizing: border-box;
+  border: none;
+  border-bottom: 1px solid #ddd;
+  color: #555;
+  margin-bottom: 20px;
 }
 
-button {
-    background: #0b6dff;
-    border: 0;
-    padding: 10px 20px;
-    margin-top: 20px;
-    color: white;
-    border-radius: 20px;
+.terms {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
 }
 
-.submit {
-    text-align: center;
+.login-button {
+  background-color: #2F9683;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
-.error {
-    color: #ff0062;
-    margin-top: 10px;
-    font-size: 0.8em;
-    font-weight: bold;
-}</style>
+.login-button:hover {
+  background-color: #44b8a2;
+}
+
+.login-info {
+  color: #000;
+  font-size: 14px;
+  margin-top: 10px;
+  text-align: left;
+  font-weight: bold;
+}
+</style>

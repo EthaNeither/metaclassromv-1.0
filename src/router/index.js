@@ -42,6 +42,21 @@ const router = createRouter({
       path:"/supermarket",
       name:'supermarket',
       component:()=>import('../views/supermarket.vue')
+    },
+    {
+      path:"/SupermarketLevel2",
+      name:'SupermarketLevel2',
+      component:()=>import('../views/Level2/SupermarketLevel2.vue')
+    },
+    {
+      path:"/RestaurantLevel2",
+      name:'RestaurantLevel2',
+      component:()=>import('../views/Level2/RestaurantLevel2.vue')
+    },
+    {
+      path:"/MRTLevel2",
+      name:'MRTLevel2',
+      component:()=>import('../views/Level2/MRTLevel2.vue')
     }
   ]
 })

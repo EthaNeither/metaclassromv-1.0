@@ -3,9 +3,7 @@
     <div id="blocker">
       <div id="instructions">
         <div class="loading-bar">
-          <label id="progress-text" for="progress-bar">{{
-            progressText
-          }}</label>
+          <label id="progress-text" for="progress-bar">{{ progressText }}</label>
           <progress id="progress-bar" :value="progress" max="100"></progress>
         </div>
         <div class="current-question">{{ currentQuestion }}</div>
@@ -25,7 +23,7 @@
             class="prev-button"
             v-if="showPrevButton"
             @click="prevQuestion"
-            style="position: absolute; bottom: 30vh; left: 43%"
+            style="position: absolute; bottom: 30vh; left: 43%;"
           >
             上一題
           </button>
@@ -33,20 +31,31 @@
             class="next-button"
             v-if="showNextButton"
             @click="nextQuestion"
-            style="position: absolute; bottom: 30vh; left: 50%"
+            style="position: absolute; bottom: 30vh; left: 50%;"
           >
             下一題
           </button>
+          <button
+  @click="goToLobby"
+  id="return-lobby-button"
+  v-if="showReturnLobbyButton"
+  style="
+    position: absolute;
+    bottom: 5vh;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    font-size: 2rem;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;">
+  返回主畫面
+</button>
         </div>
         <div
           class="answer-feedback"
           v-if="showAnswerFeedback"
-          style="
-            position: absolute;
-            bottom: 25vh;
-            left: 50%;
-            transform: translateX(-50%);
-          "
+          style="position: absolute; bottom: 25vh; left: 50%; transform: translateX(-50%);"
         >
           {{ answerFeedback }}
         </div>
@@ -57,9 +66,8 @@
 
 <script>
 import { ref, reactive, onMounted } from "@vue/runtime-core";
-import test from "@/utils/restaurant.js";
+import test from "@/utils/supermarket.js";
 import { useRouter } from "vue-router";
-
 const questionBank = [
   {
     options: [
@@ -180,27 +188,19 @@ export default {
 
     onMounted(() => {
       obj = reactive(new test());
+      updateQuestion(); // 在掛載時更新顯示的問題和選項
     });
 
-    const state = reactive({});
-
     const currentQuestionIndex = ref(0);
-    const showNextButton = ref(false); //下題的button
+    const showNextButton = ref(false); // 下一題的button
+    const showReturnLobbyButton = ref(false);
 
-    const currentQuestion = ref(
-      questionBank[currentQuestionIndex.value].question
-    ); //問題
-    const currentOptions = ref(
-      questionBank[currentQuestionIndex.value].options
-    ); //選項
-    const progress = ref(
-      (currentQuestionIndex.value / questionBank.length) * 100
-    );
-    const progressText = ref(
-      `${currentQuestionIndex.value + 1} / ${questionBank.length}`
-    );
-    const showPrevButton = ref(false); //上題的button
-    const answerFeedback = ref(""); //回覆
+    const currentQuestion = ref(""); // 問題
+    const currentOptions = ref([]); // 選項
+    const progress = ref(0);
+    const progressText = ref("");
+    const showPrevButton = ref(false); // 上一題的button
+    const answerFeedback = ref(""); // 回覆
     const showAnswerFeedback = ref(false);
 
     const handleOptionClick = (option) => {
@@ -208,10 +208,11 @@ export default {
       showNextButton.value = true;
 
       if (option.isCorrect) {
-        answerFeedback.value = "答對了！ O";
+        answerFeedback.value = "答對了！";
       } else {
-        answerFeedback.value = "答錯了! X";
+        answerFeedback.value = "答錯了";
       }
+
       showAnswerFeedback.value = true;
     };
 
@@ -228,7 +229,7 @@ export default {
         currentQuestionIndex.value++;
         updateQuestion();
       } else {
-        console.log("都回答完了!你很厲害!");
+        console.log("都回答完了！你很厲害！");
       }
       clearAnswerFeedback(); // 清空答案反饋
     };
@@ -236,13 +237,16 @@ export default {
     const updateQuestion = () => {
       currentQuestion.value = questionBank[currentQuestionIndex.value].question;
       currentOptions.value = questionBank[currentQuestionIndex.value].options;
-      progress.value = (currentQuestionIndex.value / questionBank.length) * 100;
+      progress.value =
+        (currentQuestionIndex.value / questionBank.length) * 100;
       progressText.value = `${currentQuestionIndex.value + 1} / ${
         questionBank.length
       }`;
       showPrevButton.value = currentQuestionIndex.value > 0;
       showNextButton.value =
         currentQuestionIndex.value < questionBank.length - 1;
+      showReturnLobbyButton.value =
+        currentQuestionIndex.value >= questionBank.length - 1;
       clearAnswerFeedback(); // 清空答案反饋
     };
 
@@ -250,6 +254,7 @@ export default {
       answerFeedback.value = "";
       showAnswerFeedback.value = false;
     };
+
     return {
       currentQuestion,
       currentOptions,
@@ -257,12 +262,12 @@ export default {
       progress,
       handleOptionClick,
       nextQuestion,
-      prevQuestion,
       showNextButton,
       showPrevButton,
       goToLobby,
       answerFeedback,
       showAnswerFeedback,
+      showReturnLobbyButton,
     };
   },
 };
@@ -285,23 +290,23 @@ export default {
 #lobbyButton {
   position: absolute;
   left: 40%;
-  bottom: 10%;
-  color: white;
+  bottom: 10%; 
+  color: white; 
   font-size: 2rem;
-  transform: translateX(-50%);
-  background-color: transparent;
-  border: none;
+  transform: translateX(-50%); 
+  background-color: transparent; 
+  border: none; 
   cursor: pointer;
 }
 #Level2Button {
   position: absolute;
   left: 60%;
-  bottom: 10%;
-  color: white;
+  bottom: 10%; 
+  color: white; 
   font-size: 2rem;
-  transform: translateX(-50%);
-  background-color: transparent;
-  border: none;
+  transform: translateX(-50%); 
+  background-color: transparent; 
+  border: none; 
   cursor: pointer;
 }
 
@@ -345,10 +350,11 @@ export default {
 .prev-button:hover,
 .next-button:hover {
   background-color: #868686;
+  
 }
 .current-question {
   position: absolute;
-  top: 35vh;
+  top: 35vh; 
   left: 50%;
   transform: translateX(-50%);
   font-size: 2rem;
@@ -367,7 +373,7 @@ export default {
 }
 
 .option-button:active {
-  background-color: (#48b94e, 0.6);
+  background-color:(#48b94e, 0.6);
   transform: scale(1.1);
 }
 
@@ -377,12 +383,11 @@ export default {
 
 .answer-feedback {
   text-align: center;
-  font-size: 2rem;
-  font-weight: bold;
+  font-size: 1.2rem;
   position: absolute;
-  bottom: 15vh;
+  bottom: 5vh;
   left: 50%;
   transform: translateX(-50%);
 }
-</style>
 
+</style>

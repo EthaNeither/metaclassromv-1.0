@@ -66,7 +66,7 @@
 
 <script>
 import { ref, reactive, onMounted } from "@vue/runtime-core";
-import test from "@/utils/supermarket.js";
+import test from "@/utils/restaurant.js";
 import { useRouter } from "vue-router";
 const questionBank = [
   {

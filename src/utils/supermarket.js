@@ -142,10 +142,21 @@ export default class Three {
             boxs.position.set(4.75, 2, -6.5)
             sce.add(boxs)
         }
+        function watchcustomer(sce) {
+            const waiterMat = new THREE.MeshBasicMaterial({
+                color: 0xf5deb3,
+                wireframe: true
+            })
+            const waiterGeo = new THREE.BoxGeometry(1.25, 1, 1.5)
+            const waiter = new THREE.Mesh(waiterGeo, waiterMat)
+            waiter.position.set(3.25, 1.9, 5.6)
+            sce.add(waiter)
+        }
         // watchshelf(this.scene);
         // watchwall(this.scene);
         // watchcounter(this.scene);
         // watchobj(this.scene);
+        // watchcustomer(this.scene);
     }
 
     setLight() {
@@ -174,7 +185,8 @@ export default class Three {
         this.npc = [];
         let url = './model/'
         this.modelLoader(url, { x: 1, y: 1, z: 1 }, { x: 0, y: -1.5, z: 0 }, { x: 0, y: 0, z: 0 }, "place", "supermarket");
-        this.modelLoader(url, { x: 8, y: 8, z: 8 }, { x: 2, y: 0.5, z: -4 }, { x: 0, y: 0, z: 0 }, "people", "customer(walking)");
+        // this.modelLoader(url, { x: 8, y: 8, z: 8 }, { x: 2, y: 0.5, z: -4 }, { x: 0, y: 0, z: 0 }, "people", "customer(walking)");
+        this.modelLoader(url, { x: 8, y: 8, z: 8 }, { x: 5, y: 0.5, z: 5.5 }, { x: 0, y: -1.5, z: 0 }, "people", "customer(walking)");
     }
 
 
@@ -183,12 +195,12 @@ export default class Three {
         //For progress Bar
         const loadingManger = new THREE.LoadingManager()
         const progressBar = document.getElementById('progress-bar')
-        // loadingManger.onStart = function(url, item, total){
-        //     console.log('Start loading : '+url)
-        // }
+        loadingManger.onStart = function(url, item, total){
+            console.log('Start loading : '+url)
+        }
         loadingManger.onProgress = function (url, loaded, total) {
             progressBar.value = (loaded / total) * 100
-            console.log('Start loading : ' + url)
+            console.log('Loading : ' + url)
         }
         const loadingBar = document.querySelector('.loading-bar')
         loadingManger.onLoad = function () {
@@ -212,23 +224,27 @@ export default class Three {
                 "animes": []
             };
             switch (type) {
-                case "npc":
-                    mixer.mixer = new THREE.AnimationMixer(gltf.scene.children[0]);
-                    gltf.animations.forEach(e => {
-                        if (e.name == 'Idle') {
-                            mixer.animes.push(mixer.mixer.clipAction(e).setDuration(e.duration).play())
-                        }
-                    })
-                    this.mixers.push(mixer);
+                // case "npc":
+                //     mixer.mixer = new THREE.AnimationMixer(gltf.scene.children[0]);
+                //     gltf.animations.forEach(e => {
+                //         if (e.name == 'Idle') {
+                //             mixer.animes.push(mixer.mixer.clipAction(e).setDuration(e.duration).play())
+                //         }
+                //     })
+                //     this.mixers.push(mixer);
+                //     this.scene.add(gltf.scene);//添加到場景
+                //     this.loading = false;
+                //     break;
+                case "place":
                     this.scene.add(gltf.scene);//添加到場景
                     this.loading = false;
                     break;
-                case "pick":
+                case "people":
                     mixer.mixer = new THREE.AnimationMixer(gltf.scene.children[0]);
                     mixer.animes.push(mixer.mixer.clipAction(gltf.animations[0]).setDuration(gltf.animations[0].duration).play())
                     this.mixers.push(mixer);
-                    gltf.scene.name = "char";
                     this.scene.add(gltf.scene);//添加到場景
+                    this.loading = false;
                     break;
                 default:
                     this.scene.add(gltf.scene);//添加到場景
@@ -415,6 +431,15 @@ export default class Three {
             boxBody.position = xy
             three.world.addBody(boxBody)
         }
+        function addcm() {
+            const halfExtents = new Vec3(.625, .5, .75)
+            const xy = new Vec3(3.25, 1.9, 5.6)
+            const boxShape = new CANNON.Box(halfExtents)
+            const boxBody = new CANNON.Body({ mass: 0 })
+            boxBody.addShape(boxShape)
+            boxBody.position = xy
+            three.world.addBody(boxBody)
+        }
         addsh();
         addfr1();
         addfr2();
@@ -427,6 +452,7 @@ export default class Three {
         addct3();
         addca();
         addbx();
+        addcm();
     }
 
     render() {

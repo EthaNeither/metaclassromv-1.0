@@ -161,12 +161,12 @@ export default class Three {
         //For progress Bar
         const loadingManger = new THREE.LoadingManager()
         const progressBar = document.getElementById('progress-bar')
-        // loadingManger.onStart = function(url, item, total){
-        //     console.log('Start loading : '+url)
-        // }
+        loadingManger.onStart = function(url, item, total){
+            console.log('Start loading : '+url)
+        }
         loadingManger.onProgress = function (url, loaded, total) {
             progressBar.value = (loaded / total) * 100
-            console.log('Start loading : ' + url)
+            console.log('Loading : ' + url)
         }
         const loadingBar = document.querySelector('.loading-bar')
 
@@ -191,14 +191,18 @@ export default class Three {
                 "animes": []
             };
             switch (type) {
-                case "npc":
-                    mixer.mixer = new THREE.AnimationMixer(gltf.scene.children[0]);
-                    gltf.animations.forEach(e => {
-                        if (e.name == 'Idle') {
-                            mixer.animes.push(mixer.mixer.clipAction(e).setDuration(e.duration).play())
-                        }
-                    })
-                    this.mixers.push(mixer);
+                // case "npc":
+                //     mixer.mixer = new THREE.AnimationMixer(gltf.scene.children[0]);
+                //     gltf.animations.forEach(e => {
+                //         if (e.name == 'Idle') {
+                //             mixer.animes.push(mixer.mixer.clipAction(e).setDuration(e.duration).play())
+                //         }
+                //     })
+                //     this.mixers.push(mixer);
+                //     this.scene.add(gltf.scene);//添加到場景
+                //     this.loading = false;
+                //     break;
+                case "place":
                     this.scene.add(gltf.scene);//添加到場景
                     this.loading = false;
                     break;
@@ -206,8 +210,8 @@ export default class Three {
                     mixer.mixer = new THREE.AnimationMixer(gltf.scene.children[0]);
                     mixer.animes.push(mixer.mixer.clipAction(gltf.animations[0]).setDuration(gltf.animations[0].duration).play())
                     this.mixers.push(mixer);
-                    gltf.scene.name = "char";
                     this.scene.add(gltf.scene);//添加到場景
+                    this.loading = false;
                     break;
                 default:
                     this.scene.add(gltf.scene);//添加到場景

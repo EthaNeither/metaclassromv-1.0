@@ -21,7 +21,6 @@ export default class Three {
         this.initCannon()
         this.initPointerLock()
         this.addWall()
-        this.addobj()
         this.animate()
     }
 
@@ -155,14 +154,46 @@ export default class Three {
             leftwall.position.set(1, 1.5, 3.7)
             sce.add(leftwall)
         }
+        function watchteacher(sce) {
+            const teacherMat = new THREE.MeshBasicMaterial({
+                color: 0xf5deb3,
+                wireframe: true
+            })
+            const teacherGeo = new THREE.BoxGeometry(0.7, 0.8, 0.5)
+            const teacher = new THREE.Mesh(teacherGeo, teacherMat)
+            teacher.position.set(-3.4, 1.5, 2.8)
+            sce.add(teacher)
+        }
         // watchtable(this.scene);
         // watchwall(this.scene);
-
-        // var pointer ,raycaster
-        this.pointer  = new THREE.Vector2()
+        // watchteacher(this.scene);
+        
+        this.pointer = new THREE.Vector2()
+        this.thing = new THREE.Object3D()
+        this.handle = new THREE.Object3D()
         this.raycaster = new THREE.Raycaster()
-        window.addEventListener( 'pointermove', this.onPointerMove(Event) );
-
+        this.faceDirection = new THREE.Vector3()
+        window.addEventListener('pointermove', (e) => {
+            this.pointer.x = (e.clientX / window.innerWidth) * 2 - 1;
+            this.pointer.y = - (e.clientY / window.innerHeight) * 2 + 1;
+        }, false);
+        window.addEventListener('click', (e) => {
+            this.raycaster.setFromCamera(this.pointer, this.camera)
+            this.thing = this.raycaster.intersectObject(this.scene)[0].object
+            if (this.thing.parent.userData.isobj) {
+                this.handle = this.thing
+                this.handle.material.transparent = true
+                this.handle.material.opacity = 0.5
+            } else if (this.handle.material.transparent) {
+                this.handle.material.transparent = false
+                this.handle.material.opacity = 1
+                this.faceDirection.x = this.sphereBody.position.x + this.raycaster.ray.direction.x
+                this.faceDirection.y = this.sphereBody.position.y+0.2 + this.raycaster.ray.direction.y
+                this.faceDirection.z = this.sphereBody.position.z + this.raycaster.ray.direction.z
+                this.handle.parent.position.copy(this.faceDirection)
+            }
+        });
+        window.addEventListener('resize', this.positionCrosshair());
     }
     setLight() {
         this.light = new THREE.AmbientLight(0xffffff, .8); // 環境光
@@ -186,49 +217,39 @@ export default class Three {
         three.renderer.setSize(window.innerWidth, window.innerHeight)
     }
 
-    onPointerMove(event) {
-        this.pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
-        this.pointer.y = - (event.clientY / window.innerHeight) * 2 + 1;
-    }
+    positionCrosshair() {
+        const crosshair = document.querySelector('.crosshair');
+        const centerX = window.innerWidth / 2;
+        const centerY = window.innerHeight / 2;
 
-    resetMarterial() {
-        for (let i = 0; i < this.scene.children.length; i++) {
-            if (this.scene.children[i].material) {
-                this.scene.children[i].material.opacity = 1
-            }
-        }
-    }
-    hovering() {
-        this.raycaster.setFromCamera(this.pointer, this.camera)
-        const intersects = this.raycaster.intersectObjects(this.scene.children)
-        for (let i = 0; i < intersects.length; i++) {
-            intersects[i].object.material.material.transparent = true
-            intersects[i].object.material.opacity = 0.5
-
-        }
+        crosshair.style.left = `${centerX}px`;
+        crosshair.style.top = `${centerY}px`;
     }
 
     loadModels() {
         this.npc = [];
+        this.isobj = null
         let url = './model/'
         this.modelLoader(url, { x: 1, y: 1, z: 1 }, { x: 0, y: 0, z: 0 }, { x: 0, y: 0, z: 0 }, "place", "classroom");
         this.modelLoader(url, { x: 3, y: 3, z: 3 }, { x: -3.5, y: 1.2, z: 3.5 }, { x: 0, y: 3, z: 0 }, "people", "teacher(walking)");
-        this.modelLoader(url, { x: .1, y:.1, z:.1}, { x: 0, y: 1.2, z: 0 }, { x: 0, y: 0, z: 0 }, "object", "NTD100");
+        this.modelLoader(url, { x: .1, y:.1, z:.05}, { x: -2.2, y: 1.1, z: 2.5 }, { x: 0, y: 0, z: 0 }, "object", "NTD100");
+        this.modelLoader(url, { x: .7, y:.7, z: .7}, { x: 5.9, y: 1.5, z: -2.5 }, { x: 0, y: 1.5, z: 0 },"pics","restaurantpic");
+        this.modelLoader(url, { x: .7, y:.7, z: .7}, { x: 5.9, y: 1.5, z: 0 }, { x: 0, y: 1.5, z: 0 },"pics","MRTpic");
+        this.modelLoader(url, { x: .7, y:.7, z: .7}, { x: 5.9, y: 1.5, z: 2.5 }, { x: 0, y: 1.5, z: 0 },"pics","supermarketpic");
     }
 
     modelLoader(path, size, position, rotation, type, name) {
         //For progress Bar
         const loadingManger = new THREE.LoadingManager()
         const progressBar = document.getElementById('progress-bar')
-        // loadingManger.onStart = function(url, item, total){
-        //     console.log('Start loading : '+url)
-        // }
+        loadingManger.onStart = function(url, item, total){
+            console.log('Start loading : '+url)
+        }
         loadingManger.onProgress = function (url, loaded, total) {
             progressBar.value = (loaded / total) * 100
-            console.log('Start loading : ' + url)
+            console.log('Loading : ' + url)
         }
         const loadingBar = document.querySelector('.loading-bar')
-
         loadingManger.onLoad = function () {
             loadingBar.style.display = 'none'
         }
@@ -249,32 +270,57 @@ export default class Three {
                 "animes": []
             };
             switch (type) {
-                case "npc":
-                    mixer.mixer = new THREE.AnimationMixer(gltf.scene.children[0]);
-                    gltf.animations.forEach(e => {
-                        if (e.name == 'Idle') {
-                            mixer.animes.push(mixer.mixer.clipAction(e).setDuration(e.duration).play())
-                        }
-                    })
-                    this.mixers.push(mixer);
+                // case "npc":
+                //     mixer.mixer = new THREE.AnimationMixer(gltf.scene.children[0]);
+                //     gltf.animations.forEach(e => {
+                //         if (e.name == 'Idle') {
+                //             mixer.animes.push(mixer.mixer.clipAction(e).setDuration(e.duration).play())
+                //         }
+                //     })
+                //     this.mixers.push(mixer);
+                //     this.scene.add(gltf.scene);//添加到場景
+                //     this.loading = false;
+                //     break;
+                case "place":
+                    gltf.scene.userData.isobj = false
                     this.scene.add(gltf.scene);//添加到場景
                     this.loading = false;
                     break;
                 case "people":
+                    gltf.scene.userData.isobj = false
                     mixer.mixer = new THREE.AnimationMixer(gltf.scene.children[0]);
                     mixer.animes.push(mixer.mixer.clipAction(gltf.animations[0]).setDuration(gltf.animations[0].duration).play())
                     this.mixers.push(mixer);
-                    gltf.scene.name = "char";
-                    this.scene.add(gltf.scene);//添加到場景
-                    break;
-                default:
                     this.scene.add(gltf.scene);//添加到場景
                     this.loading = false;
                     break;
+                case "pics":
+                    gltf.scene.userData.isobj = false
+                    this.scene.add(gltf.scene);//添加到場景
+                    this.loading = false;
+                    break;
+                default:
+                    // this.addNTD100(gltf.scene, size, position)
+                    gltf.scene.userData.isobj = true
+                    this.scene.add(gltf.scene)
+                    this.loading = false;
             }
         })
     }//加載並添加模型到場景
 
+    // addNTD100(gltf, size, position) {
+    //     // { x: 0, y: 1.1, z: 0 }
+    //     for (let i = 0; i < 2; i++) {
+    //         for (let j = 0; j < 5; j++) {
+    //             const item = gltf.clone(true)
+    //             item.userData.isobj = true
+    //             item.scale.set(size.x, size.y, size.z)
+    //             item.position.set(position.x + i * .2, position.y, position.z + j * .05)
+    //             //this.getcannon(size, position)
+    //             this.scene.add(item)
+    //         }
+    //     }
+    // }
 
     initCannon() {
         this.timeStep = 1 / 60;
@@ -528,6 +574,15 @@ export default class Three {
             boxBody.position = xy
             three.world.addBody(boxBody)
         }
+        function addth() {
+            const halfExtents = new Vec3(.35, .4, .25)
+            const xy = new Vec3(-3.4, 1.5, 2.8)
+            const boxShape = new CANNON.Box(halfExtents)
+            const boxBody = new CANNON.Body({ mass: 0 })
+            boxBody.addShape(boxShape)
+            boxBody.position = xy
+            three.world.addBody(boxBody)
+        }
         addst1();
         addst2();
         addst3();
@@ -548,32 +603,16 @@ export default class Three {
         addbw();
         addrw();
         addlw();
+        addth();
     }
 
-    addobj() {
-        let three = this
-        function addNTD100() {
-            const obj = three.scene.children.find((a) =>a.name === 'NTD100')
-            if(obj){
-                const halfExtents = new Vec3(obj.scale.x / 2, obj.scale.y / 2, obj.scale.z / 2)
-                const xy = new Vec3(obj.position.x, obj.position.y, obj.position.z)
-                const Shape = new CANNON.Box(halfExtents)
-                const Body = new CANNON.Body({ mass: 0 })
-                Body.addShape(Shape)
-                Body.position = xy
-                three.world.addBody(Body)
-            }
-        }
-        addNTD100()
-    }
+    
     render() {
         this.renderer.render(this.scene, this.camera)
     }
 
     animate() {
         const dt = 0.01280000000074466;
-        this.resetMarterial()
-        this.hovering()
         this.renderer.setAnimationLoop(this.animate.bind((this)))
         this.world.step(this.timeStep, dt)
         this.controls.update(dt);

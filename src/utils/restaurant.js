@@ -120,9 +120,20 @@ export default class Three {
             leftwall.position.set(-7, 2.5, 0)
             sce.add(leftwall)
         }
+        function watchwaiter(sce) {
+            const waiterMat = new THREE.MeshBasicMaterial({
+                color: 0xf5deb3,
+                wireframe: true
+            })
+            const waiterGeo = new THREE.BoxGeometry(2.6, 2, 1)
+            const waiter = new THREE.Mesh(waiterGeo, waiterMat)
+            waiter.position.set(-3, 2, -2.5)
+            sce.add(waiter)
+        }
         // watchtable(this.scene);
         // watchcounter(this.scene);
         // watchwall(this.scene);
+        // watchwaiter(this.scene);
     }
 
     setLight() {
@@ -161,12 +172,12 @@ export default class Three {
         //For progress Bar
         const loadingManger = new THREE.LoadingManager()
         const progressBar = document.getElementById('progress-bar')
-        // loadingManger.onStart = function(url, item, total){
-        //     console.log('Start loading : '+url)
-        // }
+        loadingManger.onStart = function(url, item, total){
+            console.log('Start loading : '+url)
+        }
         loadingManger.onProgress = function (url, loaded, total) {
             progressBar.value = (loaded / total) * 100
-            console.log('Start loading : ' + url)
+            console.log('Loading : ' + url)
         }
         const loadingBar = document.querySelector('.loading-bar')
 
@@ -191,14 +202,7 @@ export default class Three {
                 "animes": []
             };
             switch (type) {
-                case "npc":
-                    mixer.mixer = new THREE.AnimationMixer(gltf.scene.children[0]);
-                    gltf.animations.forEach(e => {
-                        if (e.name == 'Idle') {
-                            mixer.animes.push(mixer.mixer.clipAction(e).setDuration(e.duration).play())
-                        }
-                    })
-                    this.mixers.push(mixer);
+                case "place":
                     this.scene.add(gltf.scene);//添加到場景
                     this.loading = false;
                     break;
@@ -206,8 +210,8 @@ export default class Three {
                     mixer.mixer = new THREE.AnimationMixer(gltf.scene.children[0]);
                     mixer.animes.push(mixer.mixer.clipAction(gltf.animations[0]).setDuration(gltf.animations[0].duration).play())
                     this.mixers.push(mixer);
-                    gltf.scene.name = "char";
                     this.scene.add(gltf.scene);//添加到場景
+                    this.loading = false;
                     break;
                 default:
                     this.scene.add(gltf.scene);//添加到場景
@@ -376,6 +380,15 @@ export default class Three {
             boxBody.position = xy
             three.world.addBody(boxBody)
         }
+        function addwt() {
+            const halfExtents = new Vec3(1.3, 1, .5)
+            const xy = new Vec3(-3, 2, -2.5)
+            const boxShape = new CANNON.Box(halfExtents)
+            const boxBody = new CANNON.Body({ mass: 0 })
+            boxBody.addShape(boxShape)
+            boxBody.position = xy
+            three.world.addBody(boxBody)
+        }
         addtb1();
         addtb2();
         addtb3();
@@ -386,6 +399,7 @@ export default class Three {
         addbw();
         addrw();
         addlw();
+        addwt();
     }
 
     render() {

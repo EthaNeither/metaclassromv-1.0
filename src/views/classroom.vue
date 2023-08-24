@@ -31,33 +31,28 @@
         </div>
       </div>
     </div>
+    <div class="crosshair"></div>
   </div>
- 
+
 
   <!-- 使用 v-if 來條件渲染對話內容 -->
   <div v-if="currentDialog === 'supermarket'">
     <h2>{{ SupermarketdialogData.questionBank1[0].question }}</h2>
-    <SupermarketLevel2
-      :title="SupermarketdialogData.questionBank1[0].options[0].text"  
+    <SupermarketLevel2 :title="SupermarketdialogData.questionBank1[0].options[0].text"
       :option1="SupermarketdialogData.questionBank1[0].options[0].isCorrect"
-      :option2="SupermarketdialogData.questionBank1[0].options[1].isCorrect"
-    />
+      :option2="SupermarketdialogData.questionBank1[0].options[1].isCorrect" />
   </div>
   <div v-else-if="currentDialog === 'restaurant'">
     <h2>{{ RestaurantdialogData.questionBank2[0].answer }}</h2>
-    <RestaurantLevel2
-      :option1="RestaurantdialogData.questionBank2[0].options[0].isCorrect"
+    <RestaurantLevel2 :option1="RestaurantdialogData.questionBank2[0].options[0].isCorrect"
       :option2="RestaurantdialogData.questionBank2[0].options[1].isCorrect"
-      :answer="RestaurantdialogData.questionBank2[0].answer"
-    />
+      :answer="RestaurantdialogData.questionBank2[0].answer" />
   </div>
   <div v-else-if="currentDialog === 'MRT'">
     <h2>{{ MRTdialogData.questionBank1[0].question }}</h2>
-    <SupermarketLevel2
-      :title="MRTdialogData.questionBank1[0].options[0].text"  
+    <SupermarketLevel2 :title="MRTdialogData.questionBank1[0].options[0].text"
       :option1="MRTdialogData.questionBank1[0].options[0].isCorrect"
-      :option2="MRTdialogData.questionBank1[0].options[1].isCorrect"
-    />
+      :option2="MRTdialogData.questionBank1[0].options[1].isCorrect" />
   </div>
 </template>
 
@@ -72,7 +67,7 @@ import { useRouter } from 'vue-router';
 export default {
   setup() {
     const router = useRouter();
-  
+
     let obj;
     let src = reactive({
       url: undefined,
@@ -97,102 +92,127 @@ export default {
   components: {
     SupermarketLevel2,
     RestaurantLevel2,
-    MRTLevel2, 
+    MRTLevel2,
   },
 };
 </script>
 
 <style>
-    .loading-bar {
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%);
-        width: 100%;
-        height: 100%;
-        background-color: black;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-    }
+#app {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
 
-    #lobbyButton {
-        position: absolute;
-        left: 50%;
-        bottom: 10%;
-        color: white;
-        font-size: 2rem;
-        transform: translateX(-50%);
-        background-color: transparent;
-        border: none;
-        cursor: pointer;
-    }
+.loading-bar {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  background-color: black;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
 
-    #progress-text {
-        color: white;
-        font-size: 2rem;
-    }
+#lobbyButton {
+  position: absolute;
+  left: 50%;
+  bottom: 10%;
+  color: white;
+  font-size: 2rem;
+  transform: translateX(-50%);
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
 
-    #progress-bar {
-        width: 30%;
-        margin-top: 0.5%;
-        height: 2%;
-    }
+#progress-text {
+  color: white;
+  font-size: 2rem;
+}
 
-    #classWrapper {
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
-        width: 100%;
-        height: 100%;
-        position: absolute;
-    }
+#progress-bar {
+  width: 30%;
+  margin-top: 0.5%;
+  height: 2%;
+}
 
-    .top-text { /*進入場景文字*/
-        position: absolute;
-        bottom: 30%;
-        left: 50%;
-        transform: translateX(-50%);
-        text-align: center;
-        margin-bottom: 10px;
-    }
+#classWrapper {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+}
 
-    .centered-text {/*文字*/
-        text-align: center;
-        font-size: 1.8rem;
-        margin-top: 12px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        height: 100%;
-    }
-    .instruction-background {/*操作背景*/
-        background-color: rgba(0, 0, 0, 0.7);
-        padding: 5px;
-        border-radius: 10px;
-        text-align: center;
-        margin-top: 20px;
-        width: 40%; 
-        height: 180px; 
-        position: relative; 
-        top: -50px; 
-    }
+.top-text {
+  /*進入場景文字*/
+  position: absolute;
+  bottom: 30%;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  margin-bottom: 10px;
+}
 
-    .instruction-text { /*操作*/
-        font-size: 1.5rem;  
-        margin-top: 10px; 
-        margin-bottom: 10px;
-     
-    }
+.centered-text {
+  /*文字*/
+  text-align: center;
+  font-size: 1.8rem;
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
 
-    .bottom-text { /*目標*/
-        position: absolute;
-        top: 18%;
-        left: 50%;
-        transform: translateX(-50%);
-        margin-top: 10px;
-        text-align: center;
-    }
+.instruction-background {
+  /*操作背景*/
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 5px;
+  border-radius: 10px;
+  text-align: center;
+  margin-top: 20px;
+  width: 40%;
+  height: 180px;
+  position: relative;
+  top: -50px;
+}
+
+.instruction-text {
+  /*操作*/
+  font-size: 1.5rem;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.bottom-text {
+  /*目標*/
+  position: absolute;
+  top: 18%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 10px;
+  text-align: center;
+}
+
+.crosshair {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: greenyellow;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 9999;
+}
 </style>

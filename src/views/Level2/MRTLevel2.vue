@@ -51,6 +51,21 @@
     cursor: pointer;">
   返回主畫面
 </button>
+<button
+  @click="gotoMRTLevel3"
+  id="return-lobby-button"
+  style="
+    position: absolute;
+    bottom: 5vh;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    font-size: 2rem;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;">
+  前往第三關
+</button>
         </div>
         <div
           class="answer-feedback"
@@ -158,6 +173,10 @@ export default {
       router.push({ name: "lobby" });
     };
 
+    const gotoMRTLevel3 = () => {
+      router.push({ name: "MRTLevel3" });
+    };
+
     onMounted(() => {
       obj = reactive(new test());
       updateQuestion(); // 在掛載時更新顯示的問題和選項
@@ -240,6 +259,7 @@ export default {
       answerFeedback,
       showAnswerFeedback,
       showReturnLobbyButton,
+      gotoMRTLevel3
     };
   },
 };

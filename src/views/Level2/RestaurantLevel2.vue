@@ -51,6 +51,21 @@
     cursor: pointer;">
   返回主畫面
 </button>
+<button
+  @click="goToRestaurantLevel3"
+  id="return-lobby-button"
+  style="
+    position: absolute;
+    bottom: 5vh;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    font-size: 2rem;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;">
+  前往第三關
+</button>
         </div>
         <div
           class="answer-feedback"
@@ -185,7 +200,9 @@ export default {
       // 使用路由導航到Lobby頁面
       router.push({ name: "lobby" });
     };
-
+    const goToRestaurantLevel3 = () => {
+      router.push({ name: "RestaurantLevel3" });
+    };
     onMounted(() => {
       obj = reactive(new test());
       updateQuestion(); // 在掛載時更新顯示的問題和選項
@@ -268,6 +285,7 @@ export default {
       answerFeedback,
       showAnswerFeedback,
       showReturnLobbyButton,
+      goToRestaurantLevel3
     };
   },
 };

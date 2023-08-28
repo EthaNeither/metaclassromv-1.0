@@ -57,6 +57,21 @@ const router = createRouter({
       path:"/MRTLevel2",
       name:'MRTLevel2',
       component:()=>import('../views/Level2/MRTLevel2.vue')
+    },
+    {
+      path:"/SupermarketLevel3",
+      name:'SupermarketLevel3',
+      component:()=>import('../views/Level3/SupermarketLevel3.vue')
+    },
+    {
+      path:"/RestaurantLevel3",
+      name:'RestaurantLevel3',
+      component:()=>import('../views/Level3/RestaurantLevel3.vue')
+    },
+    {
+      path:"/MRTLevel3",
+      name:'MRTLevel3',
+      component:()=>import('../views/Level3/MRTLevel3.vue')
     }
   ]
 })

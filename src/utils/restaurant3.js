@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
-import * as CANNON from '../../node_modules/cannon-es/dist/cannon-es.js'
+import * as CANNON from 'cannon-es'
 import { PointerLockControlsCannon } from './libs/PointerLockControlsCannon.js'
 import { Vec3 } from 'cannon-es';
 
@@ -134,6 +134,32 @@ export default class Three {
         // watchcounter(this.scene);
         // watchwall(this.scene);
         // watchwaiter(this.scene);
+
+        this.pointer = new THREE.Vector2()
+        this.thing = new THREE.Object3D()
+        this.handle = new THREE.Object3D()
+        this.raycaster = new THREE.Raycaster()
+        this.faceDirection = new THREE.Vector3()
+        window.addEventListener('pointermove', (e) => {
+            this.pointer.x = (e.clientX / window.innerWidth) * 2 - 1;
+            this.pointer.y = - (e.clientY / window.innerHeight) * 2 + 1;
+        }, false);
+        window.addEventListener('click', (e) => {
+            this.raycaster.setFromCamera(this.pointer, this.camera)
+            this.thing = this.raycaster.intersectObject(this.scene)[0].object
+            if (this.thing.parent.userData.isobj) {
+                this.handle = this.thing
+                this.handle.material.transparent = true
+                this.handle.material.opacity = 0.5
+            } else if (this.handle.material.transparent) {
+                this.handle.material.transparent = false
+                this.handle.material.opacity = 1
+                this.faceDirection.x = this.sphereBody.position.x + this.raycaster.ray.direction.x
+                this.faceDirection.y = this.sphereBody.position.y+0.2 + this.raycaster.ray.direction.y
+                this.faceDirection.z = this.sphereBody.position.z + this.raycaster.ray.direction.z
+                this.handle.parent.position.copy(this.faceDirection)
+            }
+        });
     }
 
     setLight() {
@@ -160,12 +186,14 @@ export default class Three {
 
     loadModels() {
         this.npc = [];
+        this.isobj = null
         let url = './model/'
-        this.modelLoader(url, { x: 1, y: 1, z: 1 }, { x: 0, y: -3, z: 0 }, { x: 0, y: 0, z: 0 }, "place", "restaurant");
+        this.modelLoader(url , { x: 1, y: 1, z: 1 }, { x: 0, y: -3, z: 0 }, { x: 0, y: 0, z: 0 }, "place", "restaurant");
         this.modelLoader(url, { x: 11, y: 11, z: 11 }, { x: -3, y: 0.4, z: -5 }, { x: 0, y: 0, z: 0 }, "people", "waiter(breathing)");
         this.modelLoader(url, { x: .04, y: .04, z: .04 }, { x: 0.6, y: 0, z: -3.3 }, { x: 0, y: 0, z: 0 }, "object", "straws");
         this.modelLoader(url, { x: 3, y: 3, z: 3 }, { x: 6.3, y: 0.7, z: 1 }, { x: 0, y: 0, z: 0 }, "object", "piece of cake");
         this.modelLoader(url, { x: 3, y: 3, z: 3 }, { x: 0, y: 0.7, z: 10 }, { x: 0, y: 1.5, z: 0 }, "object", "piece of cake");
+    
     }
 
 
@@ -174,8 +202,8 @@ export default class Three {
         //For progress Bar
         const loadingManger = new THREE.LoadingManager()
         const progressBar = document.getElementById('progress-bar')
-        loadingManger.onStart = function (url, item, total) {
-            console.log('Start loading : ' + url)
+        loadingManger.onStart = function(url, item, total){
+            console.log('Start loading : '+url)
         }
         loadingManger.onProgress = function (url, loaded, total) {
             progressBar.value = (loaded / total) * 100
@@ -192,7 +220,7 @@ export default class Three {
 
         this.loading = true;
         this.loader = new GLTFLoader(loadingManger).setPath(path);
-        this.loader.load(type + '/' + name + '.glb', (gltf) => {
+        this.loader.load(type+'/'+name+'.glb', (gltf) => {
             gltf.scene.scale.set(size.x, size.y, size.z);//設定大小
             gltf.scene.position.set(position.x, position.y, position.z);//設定位置
             if (rotation) {
@@ -243,6 +271,7 @@ export default class Three {
             }
         }
     }
+
     initCannon() {
         this.timeStep = 1 / 60;
         this.world = new CANNON.World()
@@ -292,7 +321,7 @@ export default class Three {
         this.controls = new PointerLockControlsCannon(this.camera, this.sphereBody)
         this.scene.add(this.controls.getObject())
         this.position = this.controls.getObject().position
-        document.getElementById('instructions').addEventListener('dblclick', () => {
+        document.getElementById('instructions').addEventListener('click', () => {
             this.controls.lock()
         })
 

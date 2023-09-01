@@ -161,8 +161,11 @@ export default class Three {
     loadModels() {
         this.npc = [];
         let url = './model/'
-        this.modelLoader(url , { x: 1, y: 1, z: 1 }, { x: 0, y: -3, z: 0 }, { x: 0, y: 0, z: 0 }, "place", "restaurant");
+        this.modelLoader(url, { x: 1, y: 1, z: 1 }, { x: 0, y: -3, z: 0 }, { x: 0, y: 0, z: 0 }, "place", "restaurant");
         this.modelLoader(url, { x: 11, y: 11, z: 11 }, { x: -3, y: 0.4, z: -5 }, { x: 0, y: 0, z: 0 }, "people", "waiter(breathing)");
+        this.modelLoader(url, { x: .04, y: .04, z: .04 }, { x: 0.6, y: 0, z: -3.3 }, { x: 0, y: 0, z: 0 }, "object", "straws");
+        this.modelLoader(url, { x: 3, y: 3, z: 3 }, { x: 6.3, y: 0.7, z: 1 }, { x: 0, y: 0, z: 0 }, "object", "piece of cake");
+        this.modelLoader(url, { x: 3, y: 3, z: 3 }, { x: 0, y: 0.7, z: 10 }, { x: 0, y: 1.5, z: 0 }, "object", "piece of cake");
 
     }
 
@@ -172,8 +175,8 @@ export default class Three {
         //For progress Bar
         const loadingManger = new THREE.LoadingManager()
         const progressBar = document.getElementById('progress-bar')
-        loadingManger.onStart = function(url, item, total){
-            console.log('Start loading : '+url)
+        loadingManger.onStart = function (url, item, total) {
+            console.log('Start loading : ' + url)
         }
         loadingManger.onProgress = function (url, loaded, total) {
             progressBar.value = (loaded / total) * 100
@@ -190,7 +193,7 @@ export default class Three {
 
         this.loading = true;
         this.loader = new GLTFLoader(loadingManger).setPath(path);
-        this.loader.load(type+'/'+name+'.glb', (gltf) => {
+        this.loader.load(type + '/' + name + '.glb', (gltf) => {
             gltf.scene.scale.set(size.x, size.y, size.z);//設定大小
             gltf.scene.position.set(position.x, position.y, position.z);//設定位置
             if (rotation) {
@@ -213,6 +216,15 @@ export default class Three {
                     this.scene.add(gltf.scene);//添加到場景
                     this.loading = false;
                     break;
+                case "object":
+                    var ix, dx, jz, dz;
+                    switch (name) {
+                        default: ix = 1, dx = 0, jz = 1, dz = 0
+                            break;
+                    }
+                    this.addobj(gltf.scene, size, position, ix, dx, jz, dz);
+                    this.loading = false;
+                    break;
                 default:
                     this.scene.add(gltf.scene);//添加到場景
                     this.loading = false;
@@ -221,7 +233,17 @@ export default class Three {
         })
     }//加載並添加模型到場景
 
-
+    addobj(gltf, size, position, ix, dx, jz, dz) {
+        for (let i = 0; i < ix; i++) {
+            for (let j = 0; j < jz; j++) {
+                const item = gltf.clone(true)
+                item.userData.isobj = true
+                item.scale.set(size.x, size.y, size.z)
+                item.position.set(position.x + i * dx, position.y, position.z + j * dz)
+                this.scene.add(item)//添加到場景
+            }
+        }
+    }
     initCannon() {
         this.timeStep = 1 / 60;
         this.world = new CANNON.World()

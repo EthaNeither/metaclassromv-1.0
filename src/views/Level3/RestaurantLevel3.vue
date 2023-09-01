@@ -34,7 +34,7 @@
 </template>
 <script>
 import { reactive, onMounted } from '@vue/runtime-core'
-import test from '@/utils/restaurant.js'
+import test from '@/utils/restaurant3.js'
 export default {
     setup() {
         let obj

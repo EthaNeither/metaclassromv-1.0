@@ -8,28 +8,18 @@
                     <progress id="progress-bar" value="0" max="100"></progress>
                 </div>
                 <div class="centered-text top-text">
-                    <p>
-                        點擊進入場景，學習操作流程。
-                        <br>(盡量將鼠標靠近綠點)
-                    </p>
+                    <p>練習使用售票機服務</p>
                 </div>
-                <div class="instruction-background">
-                    <p class="instruction-text">
-                        上下左右、W A S D : 控制移動方向
-                        <br>ESC : 暫停
-                        <br>SPACE : 跳躍
-                        <br>滑鼠移動 : 轉動視角
-                        <br>點擊滑鼠左鍵 : 拿、放東西
-                    </p>
+                <div class="mid-button">
+                        <button class="instruction-background">悠遊卡加值</button>
+                        <button class="instruction-background">購買單程票</button>
+                        <button class="instruction-background">購買定期票</button>
                 </div>
                 <div class="centered-text bottom-text">
-                    <p>
-                        點擊物件來拿取、放下
-                    </p>
+                    <p>請選擇服務項目</p>
                 </div>
             </div>
         </div>
-        <div class="crosshair"></div>
     </div>
 </template>
 <script>
@@ -117,6 +107,7 @@ export default {
 .instruction-background {
     /*操作背景*/
     background-color: rgba(0, 0, 0, 0.7);
+    color: white;
     padding: 5px;
     border-radius: 10px;
     text-align: center;
@@ -125,13 +116,16 @@ export default {
     height: 180px;
     position: relative;
     top: -50px;
+    font-size: 2rem;
+    margin: 20px 20px;
 }
 
-.instruction-text {
-    /*操作*/
-    font-size: 1.5rem;
-    margin-top: 10px;
-    margin-bottom: 10px;
+.mid-button {
+    display: flex;
+    width: 60%;
+    margin-top: 40px;
+    position: relative;
+    top: -10px;
 }
 
 .bottom-text {
@@ -142,18 +136,4 @@ export default {
     transform: translateX(-50%);
     margin-top: 10px;
     text-align: center;
-}
-
-.crosshair {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background-color: greenyellow;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    pointer-events: none;
-    z-index: 9999;
-}
-</style>
+}</style>

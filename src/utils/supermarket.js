@@ -187,6 +187,11 @@ export default class Three {
         this.modelLoader(url, { x: 1, y: 1, z: 1 }, { x: 0, y: -1.5, z: 0 }, { x: 0, y: 0, z: 0 }, "place", "supermarket");
         // this.modelLoader(url, { x: 8, y: 8, z: 8 }, { x: 2, y: 0.5, z: -4 }, { x: 0, y: 0, z: 0 }, "people", "customer(walking)");
         this.modelLoader(url, { x: 8, y: 8, z: 8 }, { x: 5, y: 0.5, z: 5.5 }, { x: 0, y: -1.5, z: 0 }, "people", "customer(walking)");
+        this.modelLoader(url, { x: 3, y: 3, z: 3 }, { x: 5.5, y: -0.5, z: -1.5 }, { x: 0, y: 0, z: 0 }, "object", "milk");
+        this.modelLoader(url, { x: .1, y: .1, z: .1 }, { x: 5.5, y: -0.5, z: -3.9 }, { x: 0, y: 0, z: 0 }, "object", "juice box");
+        this.modelLoader(url, { x: .1, y: .1, z: .1 }, { x: 6, y: 0.4, z: -3.6 }, { x: 0, y: 0, z: 0 }, "object", "egg box");
+        this.modelLoader(url, { x: 3, y: 3, z: 3 }, { x: 6.2, y: 1.1, z: -3.6 }, { x: 0, y: 0, z: 0 }, "object", "piece of cake");
+        this.modelLoader(url, { x: .05, y: .05, z: .05 }, { x: 6.3, y: 1.9, z: -3.6 }, { x: 0, y: 3, z: 0 }, "object", "uncooked fired chicken");
     }
 
 
@@ -195,8 +200,8 @@ export default class Three {
         //For progress Bar
         const loadingManger = new THREE.LoadingManager()
         const progressBar = document.getElementById('progress-bar')
-        loadingManger.onStart = function(url, item, total){
-            console.log('Start loading : '+url)
+        loadingManger.onStart = function (url, item, total) {
+            console.log('Start loading : ' + url)
         }
         loadingManger.onProgress = function (url, loaded, total) {
             progressBar.value = (loaded / total) * 100
@@ -212,7 +217,7 @@ export default class Three {
 
         this.loading = true;
         this.loader = new GLTFLoader(loadingManger).setPath(path);
-        this.loader.load(type+'/'+name+'.glb', (gltf) => {
+        this.loader.load(type + '/' + name + '.glb', (gltf) => {
             gltf.scene.scale.set(size.x, size.y, size.z);//設定大小
             gltf.scene.position.set(position.x, position.y, position.z);//設定位置
             if (rotation) {
@@ -246,6 +251,25 @@ export default class Three {
                     this.scene.add(gltf.scene);//添加到場景
                     this.loading = false;
                     break;
+                case "object":
+                    var ix, dx, jz, dz;
+                    switch (name) {
+                        case "milk": ix = 2, dx = 0.8, jz = 5, dz = 0.5
+                            break;
+                        case "juice box": ix = 2, dx = 0.8, jz = 5, dz = 0.5
+                            break;
+                        case "egg box": ix = 2, dx = 0.5, jz = 5, dz = 1
+                            break;
+                        case "piece of cake": ix = 1, dx = 1, jz = 5, dz = 1
+                            break;
+                        case "uncooked fired chicken": ix = 1, dx = 1, jz = 4, dz = 1.3
+                            break;
+                        default: ix = 1, dx = 0, jz = 1, dz = 0
+                            break;
+                    }
+                    this.addobj(gltf.scene, size, position, ix, dx, jz, dz);
+                    this.loading = false;
+                    break;
                 default:
                     this.scene.add(gltf.scene);//添加到場景
                     this.loading = false;
@@ -254,6 +278,17 @@ export default class Three {
         })
     }//加載並添加模型到場景
 
+    addobj(gltf, size, position, ix, dx, jz, dz) {
+        for (let i = 0; i < ix; i++) {
+            for (let j = 0; j < jz; j++) {
+                const item = gltf.clone(true)
+                item.userData.isobj = true
+                item.scale.set(size.x, size.y, size.z)
+                item.position.set(position.x + i * dx, position.y, position.z + j * dz)
+                this.scene.add(item)//添加到場景
+            }
+        }
+    }
 
     initCannon() {
         this.timeStep = 1 / 60;

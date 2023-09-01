@@ -19,9 +19,6 @@
         </div>
       </form>
       
-      <p class="login-info">帳號: {{ 帳號 }}</p>
-      <p class="login-info">密碼: {{ 密碼 }}</p>
-      <p class="login-info">Terms accept: {{ terms }}</p>
     </div>
   </div>
 </template>

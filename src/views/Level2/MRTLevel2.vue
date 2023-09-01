@@ -81,7 +81,7 @@
 
 <script>
 import { ref, reactive, onMounted } from "@vue/runtime-core";
-import test from "@/utils/MRT.js";
+import test from "@/utils/MRT2.js";
 import { useRouter } from "vue-router";
 const questionBank = [
   {

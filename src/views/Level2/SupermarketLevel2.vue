@@ -237,6 +237,7 @@ export default {
       answerFeedback,
       showAnswerFeedback,
       showReturnLobbyButton,
+      prevQuestion,
       goToSupermarketLevel3
     };
   },

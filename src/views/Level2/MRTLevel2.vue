@@ -259,6 +259,7 @@ export default {
       answerFeedback,
       showAnswerFeedback,
       showReturnLobbyButton,
+      prevQuestion,
       gotoMRTLevel3
     };
   },

@@ -285,6 +285,7 @@ export default {
       answerFeedback,
       showAnswerFeedback,
       showReturnLobbyButton,
+      prevQuestion,
       goToRestaurantLevel3
     };
   },

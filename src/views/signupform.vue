@@ -8,22 +8,18 @@
         <label class="login-label">密碼:</label>
         <input type="password" required v-model="密碼" class="login-input">
         <div v-if="passwordError" class="error">{{ passwordError }}</div>
-      
-        <div class="terms">
-          <input type="checkbox" v-model="terms" required>
-          <label>同意所有條款</label>
-        </div>
-      
         <div class="submit">
-          <router-link :to="{ name: 'lobby' }"><button type="submit" class="login-button">確認</button></router-link>
+          <button type="submit" class="login-button">確認</button>
         </div>
       </form>
-      
     </div>
   </div>
 </template>
 
 <script>
+import axios from 'axios';
+const loginUrl = 'http://localhost:3000/api/login';
+
 export default {
   data() {
     return {
@@ -38,14 +34,38 @@ export default {
       this.passwordError = this.密碼.length > 5 ? '' : '密碼至少需要6個字元';
 
       if (!this.passwordError) {
-        console.log('帳號:', this.帳號);
-        console.log('密碼:', this.密碼);
-        console.log('terms accepted:', this.terms);
+        const userData = {
+          account: this.帳號,
+          password: this.密碼,
+        };
+
+        axios.post(loginUrl, userData)
+          .then((response) => {
+            if (response.status === 200) {
+              console.log('登入成功');
+              console.log('使用者資料:', response.data);
+              // 在這裡處理登入成功的情況，然後執行路由導航到 'lobby'
+              this.$router.push({ name: 'lobby' });
+            } else {
+              console.log('其他成功回應');
+            }
+          })
+          .catch((error) => {
+            console.error(error);
+            if (error.response && error.response.status === 401) {
+              this.passwordError = '帳號或密碼錯誤';
+            } else {
+              this.passwordError = '發生錯誤，請稍後再試。';
+            }
+          });
       }
     },
   },
 };
 </script>
+
+
+
 
 <style scoped>
 .login-page {

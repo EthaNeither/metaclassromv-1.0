@@ -24,7 +24,8 @@
                 </div>
                 <div class="centered-text bottom-text">
                     <p>
-                        點擊物件來拿取、放下
+                        請在場景中自由走動，探索哪些物件可以互動
+                        <br>(點擊物件來拿取、放下)
                     </p>
                 </div>
             </div>
@@ -34,7 +35,7 @@
 </template>
 <script>
 import { reactive, onMounted } from '@vue/runtime-core'
-import test from '@/utils/restaurant3.js'
+import test from '@/utils/restaurantLevel3.js'
 export default {
     setup() {
         let obj

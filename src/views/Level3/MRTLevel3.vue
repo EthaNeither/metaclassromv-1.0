@@ -1,6 +1,5 @@
 <template>
     <div id="classWrapper">
-
         <div id="blocker">
             <div id="instructions">
                 <div class="loading-bar">
@@ -8,38 +7,102 @@
                     <progress id="progress-bar" value="0" max="100"></progress>
                 </div>
                 <div class="centered-text top-text">
-                    <p>練習使用售票機服務</p>
+                    <p>請練習如何使用售票機的各項服務</p>
                 </div>
                 <div class="mid-button">
-                        <button class="instruction-background">悠遊卡加值</button>
-                        <button class="instruction-background">購買單程票</button>
-                        <button class="instruction-background">購買定期票</button>
+                    <button class="instruction-background" @click="showTopUpInput = true">悠遊卡加值</button>
+                    <button class="instruction-background" @click="BuyRegularTicket">購買定期票</button>
+                    <button class="instruction-background" @click="showBuyTicketInput = true">購買單程票</button>
                 </div>
-                <div class="centered-text bottom-text">
-                    <p>請選擇服務項目</p>
+                <div class="centered-text bottom-text" id="interactions">
+                    <p v-if="successMessage && !showTopUpInput && !showBuyTicketInput" :class="{ 'success-text': isSuccess, 'error-text': isFail }">{{ successMessage }}</p>
+                    <p v-if="!showTopUpInput && !showBuyTicketInput">請選擇服務項目</p>
+                    <div v-show="showTopUpInput">
+                        <div v-if="!successMessage"></div>
+                        <p>你目前有 {{ balance }} 元，請問你要加值多少？</p>
+                        <input type="number" v-model="bonus" placeholder="請輸入金額" />
+                        <button @click="handleTopUp">確認加值</button>
+                    </div>
+                    <div v-show="showBuyTicketInput">
+                        <div>
+                            <label>票價：</label>
+                            <input type="number" v-model="ticketPrice" />
+                        </div>
+                        <div>
+                            <label>票數：</label>
+                            <input type="number" v-model="ticketQuantity" />
+                        </div>
+                        <div>
+                            <label>付款金額：</label>
+                            <input type="number" v-model="paymentAmount" />
+                        </div>
+                        <button @click="buyOneWayTicket">確認購買</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </template>
+
 <script>
-import { reactive, onMounted } from '@vue/runtime-core'
+import { ref, reactive, computed, onMounted } from '@vue/runtime-core'
 import test from '@/utils/MRT.js'
 export default {
     setup() {
         let obj
+        let balance = ref(0);
         let src = reactive({
             url: undefined
         })
+        const showTopUpInput = ref(false); // 用於悠遊卡加值的顯示
+        const showBuyTicketInput = ref(false); // 用於購買單程票的顯示
+        const ticketPrice = ref(0); // 票價
+        const ticketQuantity = ref(0); // 票數
+        const paymentAmount = ref(0); // 付款金額
+        const isSuccess = ref(true);
+        const isFail = ref(true);
+        const successMessage = ref('');
+        const bonus = ref(0);
+        const currentBalance = computed(() => balance.value);
+
+        const buyOneWayTicket = () => {
+            const totalCost = ticketPrice.value * ticketQuantity.value;
+            if (paymentAmount.value >= totalCost) {
+                const change = paymentAmount.value - totalCost;
+                successMessage.value = `購買成功，找零 ${change} 元`;
+                isSuccess.value = true; // 設置為成功
+                isFail.value = false;
+            } else {
+                successMessage.value = '購買失敗，付款金額不足';
+                isFail.value = true; // 設置為失敗
+                isSuccess.value = false;
+            }
+            showTopUpInput.value = false;
+            showBuyTicketInput.value = false;
+        };
+        const handleTopUp = () => {
+            // 在這裡處理加值操作，您可以更新 balance 和其他相關邏輯
+            balance.value += bonus.value;
+            showTopUpInput.value = false; // 隱藏輸入框
+            showBuyTicketInput.value = false;
+            successMessage.value = `加值成功，你目前有 ${balance.value} 元在悠遊卡內`;
+            isSuccess.value = false;
+            isFail.value = false;
+        };
+
         onMounted(() => {
             obj = reactive(new test())
         })
+
         return {
-            obj, src,
+            obj, balance, ticketPrice, ticketQuantity, paymentAmount, src, 
+            showTopUpInput, showBuyTicketInput, handleTopUp, bonus,
+            buyOneWayTicket, successMessage, currentBalance,isSuccess,isFail
         }
     }
 }
 </script>
+
 <style>
 #app {
     position: relative;
@@ -136,4 +199,11 @@ export default {
     transform: translateX(-50%);
     margin-top: 10px;
     text-align: center;
-}</style>
+}
+.success-text {
+    color: green;
+}
+.error-text {
+    color: red;
+}
+</style>

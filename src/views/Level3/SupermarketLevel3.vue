@@ -35,7 +35,7 @@
 </template>
 <script>
 import { reactive, onMounted } from '@vue/runtime-core'
-import test from '@/utils/supermarketLevel3.js'
+import test from '@/utils/supermarket3.js'
 export default {
     setup() {
         let obj

@@ -1,7 +1,7 @@
 <template>
     <div class="home">
         <div class="welcomeMessage">
-            首次登入請選擇教室場景
+            請先選擇教室場景練習基本操作
             <br>Please select the classroom scene when logging in the first time.</div> 
         <div class="scenesContanier">
             <div class="scenes" id="classroom" @click="goclass">

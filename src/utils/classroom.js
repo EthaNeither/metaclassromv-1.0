@@ -3,7 +3,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import * as CANNON from '../../node_modules/cannon-es/dist/cannon-es.js'
 import { PointerLockControlsCannon } from './libs/PointerLockControlsCannon.js'
 import { Vec3 } from 'cannon-es';
-
+import { VRButton } from 'three/examples/jsm/webxr/VRButton';
 
 export default class Three {
     constructor() {
@@ -53,6 +53,9 @@ export default class Three {
         this.renderer = new THREE.WebGLRenderer({ antialias: true })//渲染器
         this.renderer.shadowMap.enabled = true // 設定需渲染陰影效果
         this.renderer.shadowMap.type = 2
+        this.renderer.xr.enabled = true;
+
+document.body.appendChild(VRButton.createButton(this.renderer));
         this.renderer.setSize(window.innerWidth, window.innerHeight)
         this.app.appendChild(this.renderer.domElement)
 

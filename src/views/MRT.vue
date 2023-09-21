@@ -140,7 +140,7 @@
 
         </div>
         <button @click="goToLobby" id="lobbyButton">前往主畫面</button>
-        <button @click="goToLevel2" id="Level2Button">前往第二關</button>
+        <button @click="goToMRTLevel2" id="Level2Button">前往第二關</button>
       </div>
     </div>
   </div>

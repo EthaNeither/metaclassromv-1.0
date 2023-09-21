@@ -130,7 +130,7 @@ export default {
 
 .instruction-text {
     /*操作*/
-    font-size: 1.5rem;
+    font-size: 1.6rem;
     margin-top: 10px;
     margin-bottom: 10px;
 }

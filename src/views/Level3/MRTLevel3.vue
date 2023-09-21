@@ -158,7 +158,7 @@ export default {
 .centered-text {
     /*文字*/
     text-align: center;
-    font-size: 1.8rem;
+    font-size: 2.6rem;
     margin-top: 12px;
     display: flex;
     flex-direction: column;

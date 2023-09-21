@@ -178,7 +178,7 @@ export default {
     };
     const goToLevel2=()=>{
       // 使用路由導航到level2頁面
-      router.push({ name: 'Level2' });
+      router.push({ name: 'SupermarketLevel2' });
     }
     onMounted(() => {
       obj = reactive(new test());

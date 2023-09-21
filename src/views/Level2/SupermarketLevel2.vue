@@ -23,7 +23,7 @@
             class="prev-button"
             v-if="showPrevButton"
             @click="prevQuestion"
-            style="position: absolute; bottom: 30vh; left: 43%;"
+            style="position: absolute; bottom: 30vh; left: 40%;"
           >
             上一題
           </button>
@@ -45,7 +45,7 @@
     left: 50%;
     transform: translateX(-50%);
     color: white;
-    font-size: 2rem;
+    font-size: 3rem;
     background-color: transparent;
     border: none;
     cursor: pointer;">
@@ -60,7 +60,7 @@
     left: 50%;
     transform: translateX(-50%);
     color: white;
-    font-size: 2rem;
+    font-size: 3rem;
     background-color: transparent;
     border: none;
     cursor: pointer;">
@@ -312,7 +312,7 @@ export default {
   border-radius: 5px;
   background-color: #2b2a2a;
   color: white;
-  font-size: 16px;
+  font-size: 24px;
   cursor: pointer;
   transition: background-color 0.3s;
   box-shadow: none;
@@ -328,7 +328,7 @@ export default {
   top: 35vh; 
   left: 50%;
   transform: translateX(-50%);
-  font-size: 2rem;
+  font-size: 3rem;
 }
 
 .option-button {
@@ -338,7 +338,7 @@ export default {
   border-radius: 5px;
   background-color: rgba(46, 46, 46, 0.8);
   color: white;
-  font-size: 16px;
+  font-size: 28px;
   cursor: pointer;
   transition: background-color 0.3s, transform 0.3s;
 }
@@ -354,7 +354,7 @@ export default {
 
 .answer-feedback {
   text-align: center;
-  font-size: 1.2rem;
+  font-size: 1.8rem;
   position: absolute;
   bottom: 5vh;
   left: 50%;

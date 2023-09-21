@@ -42,7 +42,7 @@
   style="
     position: absolute;
     bottom: 5vh;
-    left: 50%;
+    left: 40%;
     transform: translateX(-50%);
     color: white;
     font-size: 3rem;
@@ -57,7 +57,7 @@
   style="
     position: absolute;
     bottom: 5vh;
-    left: 50%;
+    left: 60%;
     transform: translateX(-50%);
     color: white;
     font-size: 3rem;

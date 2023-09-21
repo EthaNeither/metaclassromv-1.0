@@ -2,7 +2,7 @@
     <div class="home">
         <div class="welcomeMessage">
             請先選擇教室場景練習基本操作
-            <br>Please select the classroom scene when logging in the first time.</div> 
+            <br>Please select the classroom to practice base control.</div> 
         <div class="scenesContanier">
             <div class="scenes" id="classroom" @click="goclass">
                 <img src="src/views/Level2/picture/classroom_0.jpg" alt="教室">
